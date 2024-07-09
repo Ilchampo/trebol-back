@@ -1,9 +1,9 @@
 
 # Documentation | Back End
 
-**Author:** Pablo Beltran
-**Start Date:** July 8th, 2024
-**End Date:** July 17th, 2024
+**Author:** Pablo Beltran <br>
+**Start Date:** July 8th, 2024 <br>
+**End Date:** July 17th, 2024 <br>
 
 ## Overview
 
