@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  clientId                Int       @id @default(autoincrement()) @map("client_id")
+  name                    String
+  logoUrl                 String?   @map("logo_url")
+  minimumSearchPercentage Float     @map("minimum_search_percentage")
+  maxInvestorLevels       Int       @map("max_investor_levels")
+  companies               Company[]
+
+  @@map("Client")
+}
+
+model Company {
+  companyId Int           @id @default(autoincrement()) @map("company_id")
+  name      String
+  code      String        @unique
+  clientId  Int           @map("client_id")
+  client    Client        @relation(fields: [clientId], references: [clientId])
+  investors Shareholder[]
+
+  @@map("Company")
+}
+
+model Investor {
+  investorId Int           @id @default(autoincrement()) @map("investor_id")
+  name       String
+  type       InvestorType
+  code       String        @unique
+  documents  Document[]
+  companies  Shareholder[]
+
+  @@map("Investor")
+}
+
+model Shareholder {
+  shareholderId   Int      @id @default(autoincrement()) @map("shareholder_id")
+  companyId       Int      @map("company_id")
+  investorId      Int      @map("investor_id")
+  sharePercentage Float    @map("share_percentage")
+  level           Int
+  company         Company  @relation(fields: [companyId], references: [companyId])
+  investor        Investor @relation(fields: [investorId], references: [investorId])
+
+  @@map("Shareholder")
+}
+
+model Document {
+  documentId Int      @id @default(autoincrement()) @map("document_id")
+  investorId Int      @map("investor_id")
+  fileName   String   @map("file_name")
+  fileType   FileType @map("file_type")
+  fileData   Bytes    @map("file_data")
+  investor   Investor @relation(fields: [investorId], references: [investorId])
+
+  @@map("Document")
+}
+
+enum InvestorType {
+  company
+  person
+}
+
+enum FileType {
+  PDF
+  PNG
+}
