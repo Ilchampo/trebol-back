@@ -16,22 +16,22 @@ router.post('/create', controller.createClientController);
 // @body    none
 router.get('/get', controller.getClientByIdController);
 
-// @route   GET client/get/all
+// @route   GET client/all
 // @query   none
 // @params  none
 // @body    none
-router.get('/get/all', controller.getAllClientsController);
+router.get('/all', controller.getClientsController);
 
 // @route   PUT client/update?id=client-id
 // @query   id
 // @params  none
-// @body    name, logoUrl, minSearchPercentage, maxInvestorLevels
-router.put('/update', controller.updateClientByIdController);
+// @body    name, logoUrl, minSearchPercentage, maxInvestorLevels (all optional)
+router.put('/update', controller.updateClientController);
 
 // @route   DELETE client/delete?id=client-id
 // @query   id
 // @params  none
 // @body    none
-router.put('/delete', controller.deleteClientByIdController);
+router.delete('/delete', controller.deleteClientController);
 
 export default router;

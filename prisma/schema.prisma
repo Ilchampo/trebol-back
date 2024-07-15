@@ -8,64 +8,65 @@ datasource db {
 }
 
 model Client {
-  clientId                Int       @id @default(autoincrement()) @map("client_id")
+  id                      Int       @id @default(autoincrement())
   name                    String
-  logoUrl                 String?   @map("logo_url")
+  logoUrl                 String    @map("logo_url")
   minimumSearchPercentage Float     @map("minimum_search_percentage")
-  maxInvestorLevels       Int       @map("max_investor_levels")
+  maxInvestorsLevels      Int       @map("max_investors_levels")
   companies               Company[]
 
-  @@map("Client")
+  @@map("clients")
 }
 
 model Company {
-  companyId Int           @id @default(autoincrement()) @map("company_id")
-  name      String
-  code      String        @unique
-  clientId  Int           @map("client_id")
-  client    Client        @relation(fields: [clientId], references: [clientId])
-  investors Shareholder[]
+  id       Int     @id @default(autoincrement())
+  clientId Int     @map("client_id")
+  client   Client  @relation(fields: [clientId], references: [id])
+  name     String
+  code     String  @unique
+  shares   Share[]
 
-  @@map("Company")
+  @@index([code])
+  @@map("companies")
 }
 
 model Investor {
-  investorId Int           @id @default(autoincrement()) @map("investor_id")
-  name       String
-  type       InvestorType
-  code       String        @unique
-  documents  Document[]
-  companies  Shareholder[]
+  id     Int          @id @default(autoincrement())
+  name   String
+  type   InvestorType
+  code   String
+  shares Share[]
 
-  @@map("Investor")
+  @@map("investors")
 }
 
-model Shareholder {
-  shareholderId   Int      @id @default(autoincrement()) @map("shareholder_id")
-  companyId       Int      @map("company_id")
-  investorId      Int      @map("investor_id")
-  sharePercentage Float    @map("share_percentage")
+model Share {
+  id              Int        @id @default(autoincrement())
+  companyId       Int        @map("company_id")
+  company         Company    @relation(fields: [companyId], references: [id])
+  investorId      Int        @map("investor_id")
+  investor        Investor   @relation(fields: [investorId], references: [id])
+  sharePercentage Float      @map("share_percentage")
   level           Int
-  company         Company  @relation(fields: [companyId], references: [companyId])
-  investor        Investor @relation(fields: [investorId], references: [investorId])
+  documents       Document[]
 
-  @@map("Shareholder")
+  @@map("shares")
 }
 
 model Document {
-  documentId Int      @id @default(autoincrement()) @map("document_id")
-  investorId Int      @map("investor_id")
-  fileName   String   @map("file_name")
-  fileType   FileType @map("file_type")
-  fileData   Bytes    @map("file_data")
-  investor   Investor @relation(fields: [investorId], references: [investorId])
+  id       Int      @id @default(autoincrement())
+  shareId  Int      @map("share_id")
+  share    Share    @relation(fields: [shareId], references: [id])
+  fileName String   @map("file_name")
+  fileType FileType @map("file_type")
+  fileData Bytes    @map("file_data")
 
-  @@map("Document")
+  @@map("documents")
 }
 
 enum InvestorType {
-  company
-  person
+  Person
+  Company
 }
 
 enum FileType {

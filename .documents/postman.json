@@ -1,0 +1,538 @@
+{
+    "info": {
+        "name": "API Documentation",
+        "_postman_id": "d43eab7c-9f9d-44f5-94f5-18e93f260303",
+        "description": "Collection of API endpoints for the project.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Client",
+            "item": [
+                {
+                    "name": "Create Client",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Client Name\",\n    \"logoUrl\": \"https://example.com/logo.png\",\n    \"minSearchPercentage\": 10,\n    \"maxInvestorLevels\": 5\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/client/create",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["client", "create"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Client by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/client/get?id=1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["client", "get"],
+                            "query": [{ "key": "id", "value": "1" }]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Clients",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/client/get/all",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["client", "get", "all"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Client by ID",
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"clientId\": 1,\n    \"name\": \"Updated Client Name\",\n    \"logoUrl\": \"https://example.com/newlogo.png\",\n    \"minSearchPercentage\": 15,\n    \"maxInvestorLevels\": 6\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/client/update",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["client", "update"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Client by ID",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/client/delete?id=1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["client", "delete"],
+                            "query": [{ "key": "id", "value": "1" }]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Company",
+            "item": [
+                {
+                    "name": "Create Company",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Company Name\",\n    \"code\": \"COMP001\",\n    \"clientId\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/company/create",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["company", "create"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Company by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/company/get?id=1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["company", "get"],
+                            "query": [{ "key": "id", "value": "1" }]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Companies",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/company/get/all?limit=10&offset=0",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["company", "get", "all"],
+                            "query": [
+                                { "key": "limit", "value": "10" },
+                                { "key": "offset", "value": "0" }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Companies by Client ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/company/get/by-client?clientId=1&limit=10&offset=0",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["company", "get", "by-client"],
+                            "query": [
+                                { "key": "clientId", "value": "1" },
+                                { "key": "limit", "value": "10" },
+                                { "key": "offset", "value": "0" }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Company by ID",
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"companyId\": 1,\n    \"name\": \"Updated Company Name\",\n    \"code\": \"COMP002\",\n    \"clientId\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/company/update",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["company", "update"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Company by ID",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/company/delete?id=1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["company", "delete"],
+                            "query": [{ "key": "id", "value": "1" }]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Document",
+            "item": [
+                {
+                    "name": "Create Document",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"investorId\": 1,\n    \"fileName\": \"document.pdf\",\n    \"fileType\": \"PDF\",\n    \"fileData\": \"base64-encoded-data\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/document/create",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["document", "create"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Document by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/document/get?id=1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["document", "get"],
+                            "query": [{ "key": "id", "value": "1" }]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Documents for an Investor",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/document/get/all?investorId=1&limit=10&offset=0",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["document", "get", "all"],
+                            "query": [
+                                { "key": "investorId", "value": "1" },
+                                { "key": "limit", "value": "10" },
+                                { "key": "offset", "value": "0" }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Document by ID",
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"documentId\": 1,\n    \"fileName\": \"newdocument.pdf\",\n    \"fileType\": \"PDF\",\n    \"fileData\": \"new-base64-encoded-data\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/document/update",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["document", "update"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Document by ID",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/document/delete?id=1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["document", "delete"],
+                            "query": [{ "key": "id", "value": "1" }]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Investor",
+            "item": [
+                {
+                    "name": "Create Investor",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Investor Name\",\n    \"type\": \"person\",\n    \"code\": \"INV001\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/investor/create",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["investor", "create"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Investor by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/investor/get?id=1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["investor", "get"],
+                            "query": [{ "key": "id", "value": "1" }]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Investors",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/investor/get/all?limit=10&offset=0",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["investor", "get", "all"],
+                            "query": [
+                                { "key": "limit", "value": "10" },
+                                { "key": "offset", "value": "0" }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Investors by Type",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/investor/get/type?type=company&limit=10&offset=0",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["investor", "get", "type"],
+                            "query": [
+                                { "key": "type", "value": "company" },
+                                { "key": "limit", "value": "10" },
+                                { "key": "offset", "value": "0" }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Investor by ID",
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"investorId\": 1,\n    \"name\": \"Updated Investor Name\",\n    \"type\": \"company\",\n    \"code\": \"INV002\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/investor/update",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["investor", "update"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Investor by ID",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/investor/delete?id=1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["investor", "delete"],
+                            "query": [{ "key": "id", "value": "1" }]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Shareholder",
+            "item": [
+                {
+                    "name": "Create Shareholder",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"companyId\": 1,\n    \"investorId\": 1,\n    \"sharePercentage\": 50,\n    \"level\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/shareholder/create",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["shareholder", "create"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Shareholder by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/shareholder/get?id=1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["shareholder", "get"],
+                            "query": [{ "key": "id", "value": "1" }]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Shareholders for a Company",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/shareholder/get/all?companyId=1&limit=10&offset=0",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["shareholder", "get", "all"],
+                            "query": [
+                                { "key": "companyId", "value": "1" },
+                                { "key": "limit", "value": "10" },
+                                { "key": "offset", "value": "0" }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Shareholder by ID",
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"shareholderId\": 1,\n    \"companyId\": 1,\n    \"investorId\": 2,\n    \"sharePercentage\": 60,\n    \"level\": 2\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/shareholder/update",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["shareholder", "update"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Shareholder by ID",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/shareholder/delete?id=1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["shareholder", "delete"],
+                            "query": [{ "key": "id", "value": "1" }]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Real Owners for a Company",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/shareholder/getRealOwners?companyId=1&minSearchPercentage=25&maxLevels=3",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["shareholder", "getRealOwners"],
+                            "query": [
+                                { "key": "companyId", "value": "1" },
+                                { "key": "minSearchPercentage", "value": "25" },
+                                { "key": "maxLevels", "value": "3" }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
+}

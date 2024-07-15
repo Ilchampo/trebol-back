@@ -28,3 +28,5 @@ The project structure follows a common pattern to ensure modularity, maintainabi
 - **Prisma:** Acts as the ORM layer, providing a type-safe interface to interact with the PostgreSQL database.
 
 ![Project Structure](./.documents/exports/structure.png)
+
+## API Documentation

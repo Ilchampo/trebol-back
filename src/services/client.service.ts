@@ -9,19 +9,20 @@ import { handleError } from '../utils/handleError';
 import prisma from '../database';
 import CustomResponse from '../models/customResponse.model';
 import httpCodes from '../constants/httpCodes';
+import invalidCodes from '../constants/invalidCodes';
 
 export const createClientService = async (
     args: ICreateClientArgs,
 ): Promise<CustomResponse<IClient>> => {
-    const { name, logoUrl, minSearchPercentage, maxInvestorLevels } = args;
+    const { name, logoUrl, minimumSearchPercentage, maxInvestorsLevels } = args;
 
     try {
         const response = await prisma.client.create({
             data: {
                 name,
                 logoUrl,
-                minimumSearchPercentage: minSearchPercentage,
-                maxInvestorLevels: maxInvestorLevels,
+                minimumSearchPercentage,
+                maxInvestorsLevels,
             },
         });
 
@@ -31,55 +32,53 @@ export const createClientService = async (
     }
 };
 
-export const getClientByIdService = async (
-    clientId: number,
-): Promise<CustomResponse<IClient>> => {
+export const getClientsService = async (): Promise<
+    CustomResponse<IClient[]>
+> => {
     try {
-        const response = await prisma.client.findUnique({
-            where: {
-                clientId,
-            },
-        });
-
-        return new CustomResponse(httpCodes.OK, response, undefined);
-    } catch (error) {
-        return handleError(error) as CustomResponse<IClient>;
-    }
-};
-
-export const getAllClientsService = async (
-    limit?: number,
-): Promise<CustomResponse<IClient[]>> => {
-    try {
-        const response = await prisma.client.findMany({
-            take: limit,
-            orderBy: {
-                name: 'asc',
-            },
-        });
-
+        const response = await prisma.client.findMany();
         return new CustomResponse(httpCodes.OK, response, undefined);
     } catch (error) {
         return handleError(error) as CustomResponse<IClient[]>;
     }
 };
 
-export const updateClientByIdService = async (
+export const getClientByIdService = async (
+    id: number,
+): Promise<CustomResponse<IClient | undefined>> => {
+    try {
+        const response = await prisma.client.findUnique({
+            where: { id },
+        });
+
+        if (!response) {
+            return new CustomResponse(
+                httpCodes.NOT_FOUND,
+                undefined,
+                invalidCodes.INVALID_NOT_FOUND,
+            );
+        }
+
+        return new CustomResponse(httpCodes.OK, response, undefined);
+    } catch (error) {
+        return handleError(error) as CustomResponse<IClient>;
+    }
+};
+
+export const updateClientService = async (
+    id: number,
     args: IUpdateClientArgs,
 ): Promise<CustomResponse<IClient>> => {
-    const { clientId, name, logoUrl, minSearchPercentage, maxInvestorLevels } =
-        args;
+    const { name, logoUrl, minimumSearchPercentage, maxInvestorsLevels } = args;
 
     try {
         const response = await prisma.client.update({
-            where: {
-                clientId,
-            },
+            where: { id },
             data: {
                 name,
                 logoUrl,
-                minimumSearchPercentage: minSearchPercentage,
-                maxInvestorLevels,
+                minimumSearchPercentage,
+                maxInvestorsLevels,
             },
         });
 
@@ -89,14 +88,12 @@ export const updateClientByIdService = async (
     }
 };
 
-export const deleteClientByIdService = async (
-    clientId: number,
+export const deleteClientService = async (
+    id: number,
 ): Promise<CustomResponse<IClient>> => {
     try {
         const response = await prisma.client.delete({
-            where: {
-                clientId,
-            },
+            where: { id },
         });
 
         return new CustomResponse(httpCodes.OK, response, undefined);

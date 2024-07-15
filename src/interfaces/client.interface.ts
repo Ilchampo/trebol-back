@@ -1,22 +1,21 @@
 export interface IClient {
-    clientId: number;
+    id?: number;
     name: string;
-    logoUrl?: string | null;
+    logoUrl: string;
     minimumSearchPercentage: number;
-    maxInvestorLevels: number;
+    maxInvestorsLevels: number;
 }
 
 export interface ICreateClientArgs {
     name: string;
-    logoUrl?: string | null;
-    minSearchPercentage: number;
-    maxInvestorLevels: number;
+    logoUrl: string;
+    minimumSearchPercentage: number;
+    maxInvestorsLevels: number;
 }
 
 export interface IUpdateClientArgs {
-    clientId: number;
     name?: string;
-    logoUrl?: string | null;
-    minSearchPercentage?: number;
-    maxInvestorLevels?: number;
+    logoUrl?: string;
+    minimumSearchPercentage?: number;
+    maxInvestorsLevels?: number;
 }
