@@ -1,9 +1,16 @@
 import type { Request, Response } from 'express';
 
-import * as service from '../services/investor.service';
-import * as numValidators from '../utils/numValidators';
-import * as strValidators from '../utils/strValidators';
+import {
+    createInvestorService,
+    updateInvestorService,
+    getInvestorByIdService,
+    getInvestorsService,
+    deleteInvestorService,
+    saveCompanyInvestorsService,
+    getCompanyRealOwners,
+} from '../services/investor.service';
 
+import * as numValidators from '../utils/numValidators';
 import httpCodes from '../constants/httpCodes';
 import invalidCodes from '../constants/invalidCodes';
 
@@ -11,51 +18,29 @@ export const createInvestorController = async (
     req: Request,
     res: Response,
 ): Promise<Response> => {
-    const { name, type, code } = req.body;
+    const { companyId, sharePercentage, name, code, type, parentInvestorId } =
+        req.body;
 
     if (
-        !strValidators.isString(name) ||
-        !strValidators.isString(code) ||
-        !['Person', 'Company'].includes(type)
+        !numValidators.isPositiveInteger(companyId) ||
+        !numValidators.numberInRange(0, 100, sharePercentage) ||
+        typeof name !== 'string' ||
+        typeof code !== 'string' ||
+        (type !== 'person' && type !== 'company')
     ) {
         return res
             .status(httpCodes.BAD_REQUEST)
             .send(invalidCodes.INVALID_DATA);
     }
 
-    const response = await service.createInvestorService({
+    const response = await createInvestorService({
+        companyId,
+        sharePercentage,
         name,
-        type,
         code,
+        type,
+        parentInvestorId,
     });
-
-    return res
-        .status(response.getCode())
-        .send(response.getData() ?? response.getError());
-};
-
-export const getInvestorsController = async (
-    req: Request,
-    res: Response,
-): Promise<Response> => {
-    const response = await service.getInvestorsService();
-
-    return res
-        .status(response.getCode())
-        .send(response.getData() ?? response.getError());
-};
-
-export const getInvestorByIdController = async (
-    req: Request,
-    res: Response,
-): Promise<Response> => {
-    const { id } = req.query;
-
-    if (!numValidators.isPositiveInteger(Number(id))) {
-        return res.status(httpCodes.BAD_REQUEST).send(invalidCodes.INVALID_ID);
-    }
-
-    const response = await service.getInvestorByIdService(Number(id));
 
     return res
         .status(response.getCode())
@@ -66,25 +51,51 @@ export const updateInvestorController = async (
     req: Request,
     res: Response,
 ): Promise<Response> => {
-    const { id } = req.query;
-    const { name, type, code } = req.body;
+    const { id } = req.params;
+    const { companyId, sharePercentage, name, code, type, parentInvestorId } =
+        req.body;
 
-    if (
-        !numValidators.isPositiveInteger(Number(id)) ||
-        (name && !strValidators.isString(name)) ||
-        (code && !strValidators.isString(code)) ||
-        (type && !['Person', 'Company'].includes(type))
-    ) {
-        return res
-            .status(httpCodes.BAD_REQUEST)
-            .send(invalidCodes.INVALID_DATA);
+    if (!numValidators.isPositiveInteger(Number(id))) {
+        return res.status(httpCodes.BAD_REQUEST).send(invalidCodes.INVALID_ID);
     }
 
-    const response = await service.updateInvestorService(Number(id), {
+    const response = await updateInvestorService({
+        id: Number(id),
+        companyId,
+        sharePercentage,
         name,
-        type,
         code,
+        type,
+        parentInvestorId,
     });
+
+    return res
+        .status(response.getCode())
+        .send(response.getData() ?? response.getError());
+};
+
+export const getInvestorByIdController = async (
+    req: Request,
+    res: Response,
+): Promise<Response> => {
+    const { id } = req.params;
+
+    if (!numValidators.isPositiveInteger(Number(id))) {
+        return res.status(httpCodes.BAD_REQUEST).send(invalidCodes.INVALID_ID);
+    }
+
+    const response = await getInvestorByIdService(Number(id));
+
+    return res
+        .status(response.getCode())
+        .send(response.getData() ?? response.getError());
+};
+
+export const getInvestorsController = async (
+    req: Request,
+    res: Response,
+): Promise<Response> => {
+    const response = await getInvestorsService();
 
     return res
         .status(response.getCode())
@@ -95,13 +106,51 @@ export const deleteInvestorController = async (
     req: Request,
     res: Response,
 ): Promise<Response> => {
-    const { id } = req.query;
+    const { id } = req.params;
 
     if (!numValidators.isPositiveInteger(Number(id))) {
         return res.status(httpCodes.BAD_REQUEST).send(invalidCodes.INVALID_ID);
     }
 
-    const response = await service.deleteInvestorService(Number(id));
+    const response = await deleteInvestorService(Number(id));
+
+    return res
+        .status(response.getCode())
+        .send(response.getData() ?? response.getError());
+};
+
+export const saveCompanyInvestorsController = async (
+    req: Request,
+    res: Response,
+): Promise<Response> => {
+    const { companyId } = req.params;
+    const investors = req.body.investors;
+
+    if (!numValidators.isPositiveInteger(Number(companyId))) {
+        return res.status(httpCodes.BAD_REQUEST).send(invalidCodes.INVALID_ID);
+    }
+
+    const response = await saveCompanyInvestorsService(
+        Number(companyId),
+        investors,
+    );
+
+    return res
+        .status(response.getCode())
+        .send(response.getData() ?? response.getError());
+};
+
+export const getCompanyRealOwnersController = async (
+    req: Request,
+    res: Response,
+): Promise<Response> => {
+    const { companyId } = req.params;
+
+    if (!numValidators.isPositiveInteger(Number(companyId))) {
+        return res.status(httpCodes.BAD_REQUEST).send(invalidCodes.INVALID_ID);
+    }
+
+    const response = await getCompanyRealOwners(Number(companyId));
 
     return res
         .status(response.getCode())

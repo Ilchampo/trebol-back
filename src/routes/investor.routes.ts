@@ -1,37 +1,50 @@
-import { Router } from 'express';
+import express from 'express';
 
-import * as controller from '../controllers/investor.controller';
+import {
+    createInvestorController,
+    updateInvestorController,
+    getInvestorByIdController,
+    getInvestorsController,
+    deleteInvestorController,
+    saveCompanyInvestorsController,
+    getCompanyRealOwnersController,
+} from '../controllers/investor.controller';
 
-const router = Router();
+const router = express.Router();
 
-// @route   POST investor/create
-// @query   none
-// @params  none
-// @body    name, type, code
-router.post('/create', controller.createInvestorController);
+// @route   POST /investors
+// @desc    Create a new investor
+// @access  Public
+router.post('/', createInvestorController);
 
-// @route   GET investor/get?id=investor-id
-// @query   id
-// @params  none
-// @body    none
-router.get('/get', controller.getInvestorByIdController);
+// @route   PUT /investors/:id
+// @desc    Update an investor
+// @access  Public
+router.put('/:id', updateInvestorController);
 
-// @route   GET investor/all
-// @query   none
-// @params  none
-// @body    none
-router.get('/all', controller.getInvestorsController);
+// @route   GET /investors/:id
+// @desc    Get an investor by ID
+// @access  Public
+router.get('/:id', getInvestorByIdController);
 
-// @route   PUT investor/update?id=investor-id
-// @query   id
-// @params  none
-// @body    name, type, code (all optional)
-router.put('/update', controller.updateInvestorController);
+// @route   GET /investors
+// @desc    Get all investors
+// @access  Public
+router.get('/', getInvestorsController);
 
-// @route   DELETE investor/delete?id=investor-id
-// @query   id
-// @params  none
-// @body    none
-router.delete('/delete', controller.deleteInvestorController);
+// @route   DELETE /investors/:id
+// @desc    Delete an investor
+// @access  Public
+router.delete('/:id', deleteInvestorController);
+
+// @route   POST /investors/company/:companyId
+// @desc    Save investors for a company
+// @access  Public
+router.post('/company/:companyId', saveCompanyInvestorsController);
+
+// @route   GET /investors/company/:companyId/real-owners
+// @desc    Get real owners of a company
+// @access  Public
+router.get('/company/:companyId/real-owners', getCompanyRealOwnersController);
 
 export default router;

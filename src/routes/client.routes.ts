@@ -1,37 +1,38 @@
-import { Router } from 'express';
+import express from 'express';
 
-import * as controller from '../controllers/client.controller';
+import {
+    createClientController,
+    updateClientController,
+    getClientByIdController,
+    getClientsController,
+    deleteClientController,
+} from '../controllers/client.controller';
 
-const router = Router();
+const router = express.Router();
 
-// @route   POST client/create
-// @query   none
-// @params  none
-// @body    name, logoUrl, minSearchPercentage, maxInvestorLevels
-router.post('/create', controller.createClientController);
+// @route   POST /clients
+// @desc    Create a new client
+// @access  Public
+router.post('/', createClientController);
 
-// @route   GET client/get?id=client-id
-// @query   id
-// @params  none
-// @body    none
-router.get('/get', controller.getClientByIdController);
+// @route   PUT /clients/:id
+// @desc    Update a client
+// @access  Public
+router.put('/:id', updateClientController);
 
-// @route   GET client/all
-// @query   none
-// @params  none
-// @body    none
-router.get('/all', controller.getClientsController);
+// @route   GET /clients/:id
+// @desc    Get a client by ID
+// @access  Public
+router.get('/:id', getClientByIdController);
 
-// @route   PUT client/update?id=client-id
-// @query   id
-// @params  none
-// @body    name, logoUrl, minSearchPercentage, maxInvestorLevels (all optional)
-router.put('/update', controller.updateClientController);
+// @route   GET /clients
+// @desc    Get all clients
+// @access  Public
+router.get('/', getClientsController);
 
-// @route   DELETE client/delete?id=client-id
-// @query   id
-// @params  none
-// @body    none
-router.delete('/delete', controller.deleteClientController);
+// @route   DELETE /clients/:id
+// @desc    Delete a client
+// @access  Public
+router.delete('/:id', deleteClientController);
 
 export default router;

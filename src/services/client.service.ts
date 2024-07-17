@@ -6,23 +6,23 @@ import type {
 
 import { handleError } from '../utils/handleError';
 
-import prisma from '../database';
 import CustomResponse from '../models/customResponse.model';
 import httpCodes from '../constants/httpCodes';
 import invalidCodes from '../constants/invalidCodes';
+import prisma from '../database';
 
 export const createClientService = async (
     args: ICreateClientArgs,
 ): Promise<CustomResponse<IClient>> => {
-    const { name, logoUrl, minimumSearchPercentage, maxInvestorsLevels } = args;
+    const { name, logoUrl, maxInvestorLevels, minSearchPercentage } = args;
 
     try {
         const response = await prisma.client.create({
             data: {
                 name,
                 logoUrl,
-                minimumSearchPercentage,
-                maxInvestorsLevels,
+                maxInvestorLevels,
+                minSearchPercentage,
             },
         });
 
@@ -32,14 +32,25 @@ export const createClientService = async (
     }
 };
 
-export const getClientsService = async (): Promise<
-    CustomResponse<IClient[]>
-> => {
+export const updateClientService = async (
+    args: IUpdateClientArgs,
+): Promise<CustomResponse<IClient>> => {
+    const { id, name, logoUrl, maxInvestorLevels, minSearchPercentage } = args;
+
     try {
-        const response = await prisma.client.findMany();
-        return new CustomResponse(httpCodes.OK, response, undefined);
+        const response = await prisma.client.update({
+            where: { id },
+            data: {
+                name,
+                logoUrl,
+                maxInvestorLevels,
+                minSearchPercentage,
+            },
+        });
+
+        return new CustomResponse(httpCodes.OK, response, null);
     } catch (error) {
-        return handleError(error) as CustomResponse<IClient[]>;
+        return handleError(error) as CustomResponse<IClient>;
     }
 };
 
@@ -61,30 +72,18 @@ export const getClientByIdService = async (
 
         return new CustomResponse(httpCodes.OK, response, undefined);
     } catch (error) {
-        return handleError(error) as CustomResponse<IClient>;
+        return handleError(error) as CustomResponse<any>;
     }
 };
 
-export const updateClientService = async (
-    id: number,
-    args: IUpdateClientArgs,
-): Promise<CustomResponse<IClient>> => {
-    const { name, logoUrl, minimumSearchPercentage, maxInvestorsLevels } = args;
-
+export const getClientsService = async (): Promise<
+    CustomResponse<IClient[]>
+> => {
     try {
-        const response = await prisma.client.update({
-            where: { id },
-            data: {
-                name,
-                logoUrl,
-                minimumSearchPercentage,
-                maxInvestorsLevels,
-            },
-        });
-
+        const response = await prisma.client.findMany();
         return new CustomResponse(httpCodes.OK, response, undefined);
     } catch (error) {
-        return handleError(error) as CustomResponse<IClient>;
+        return handleError(error) as CustomResponse<IClient[]>;
     }
 };
 

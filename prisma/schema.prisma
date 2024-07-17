@@ -8,65 +8,56 @@ datasource db {
 }
 
 model Client {
-  id                      Int       @id @default(autoincrement())
-  name                    String
-  logoUrl                 String    @map("logo_url")
-  minimumSearchPercentage Float     @map("minimum_search_percentage")
-  maxInvestorsLevels      Int       @map("max_investors_levels")
-  companies               Company[]
+  id                  Int       @id @default(autoincrement()) @map("id")
+  name                String    @map("name")
+  logoUrl             String?   @map("logo_url")
+  maxInvestorLevels   Int       @map("max_investor_levels")
+  minSearchPercentage Float     @map("min_search_percentage")
+  companies           Company[]
 
   @@map("clients")
 }
 
 model Company {
-  id       Int     @id @default(autoincrement())
-  clientId Int     @map("client_id")
-  client   Client  @relation(fields: [clientId], references: [id])
-  name     String
-  code     String  @unique
-  shares   Share[]
+  id        Int        @id @default(autoincrement()) @map("id")
+  name      String     @map("name")
+  code      String     @map("code")
+  clientId  Int        @map("client_id")
+  client    Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  investors Investor[]
 
-  @@index([code])
   @@map("companies")
 }
 
 model Investor {
-  id     Int          @id @default(autoincrement())
-  name   String
-  type   InvestorType
-  code   String
-  shares Share[]
+  id               Int          @id @default(autoincrement()) @map("id")
+  companyId        Int          @map("company_id")
+  sharePercentage  Float        @map("share_percentage")
+  name             String       @map("name")
+  code             String       @map("code")
+  type             InvestorType @map("type")
+  parentInvestorId Int?         @map("parent_investor_id")
+  company          Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  parentInvestor   Investor?    @relation("InvestorToParent", fields: [parentInvestorId], references: [id])
+  childInvestors   Investor[]   @relation("InvestorToParent")
+  files            File[]
 
   @@map("investors")
 }
 
-model Share {
-  id              Int        @id @default(autoincrement())
-  companyId       Int        @map("company_id")
-  company         Company    @relation(fields: [companyId], references: [id])
-  investorId      Int        @map("investor_id")
-  investor        Investor   @relation(fields: [investorId], references: [id])
-  sharePercentage Float      @map("share_percentage")
-  level           Int
-  documents       Document[]
+model File {
+  id         Int      @id @default(autoincrement()) @map("id")
+  investorId Int      @map("investor_id")
+  fileType   FileType @map("file_type")
+  fileData   Bytes    @map("file_data")
+  investor   Investor @relation(fields: [investorId], references: [id], onDelete: Cascade)
 
-  @@map("shares")
-}
-
-model Document {
-  id       Int      @id @default(autoincrement())
-  shareId  Int      @map("share_id")
-  share    Share    @relation(fields: [shareId], references: [id])
-  fileName String   @map("file_name")
-  fileType FileType @map("file_type")
-  fileData Bytes    @map("file_data")
-
-  @@map("documents")
+  @@map("files")
 }
 
 enum InvestorType {
-  Person
-  Company
+  person
+  company
 }
 
 enum FileType {

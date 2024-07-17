@@ -1,18 +1,19 @@
 export interface ICompany {
-    id?: number;
-    clientId: number;
+    id: number;
     name: string;
     code: string;
+    clientId: number;
 }
 
 export interface ICreateCompanyArgs {
-    clientId: number;
     name: string;
     code: string;
+    clientId: number;
 }
 
 export interface IUpdateCompanyArgs {
-    clientId?: number;
+    id: number;
     name?: string;
     code?: string;
+    clientId?: number;
 }

@@ -1,37 +1,38 @@
-import { Router } from 'express';
+import express from 'express';
 
-import * as controller from '../controllers/company.controller';
+import {
+    createCompanyController,
+    updateCompanyController,
+    getCompanyByIdController,
+    getCompaniesController,
+    deleteCompanyController,
+} from '../controllers/company.controller';
 
-const router = Router();
+const router = express.Router();
 
-// @route   POST company/create
-// @query   none
-// @params  none
-// @body    clientId, name, code
-router.post('/create', controller.createCompanyController);
+// @route   POST /companies
+// @desc    Create a new company
+// @access  Public
+router.post('/', createCompanyController);
 
-// @route   GET company/get?id=company-id
-// @query   id
-// @params  none
-// @body    none
-router.get('/get', controller.getCompanyByIdController);
+// @route   PUT /companies/:id
+// @desc    Update a company
+// @access  Public
+router.put('/:id', updateCompanyController);
 
-// @route   GET company/all
-// @query   none
-// @params  none
-// @body    none
-router.get('/all', controller.getCompaniesController);
+// @route   GET /companies/:id
+// @desc    Get a company by ID
+// @access  Public
+router.get('/:id', getCompanyByIdController);
 
-// @route   PUT company/update?id=company-id
-// @query   id
-// @params  none
-// @body    clientId, name, code (all optional)
-router.put('/update', controller.updateCompanyController);
+// @route   GET /companies
+// @desc    Get all companies
+// @access  Public
+router.get('/', getCompaniesController);
 
-// @route   DELETE company/delete?id=company-id
-// @query   id
-// @params  none
-// @body    none
-router.delete('/delete', controller.deleteCompanyController);
+// @route   DELETE /companies/:id
+// @desc    Delete a company
+// @access  Public
+router.delete('/:id', deleteCompanyController);
 
 export default router;

@@ -6,22 +6,22 @@ import type {
 
 import { handleError } from '../utils/handleError';
 
-import prisma from '../database';
 import CustomResponse from '../models/customResponse.model';
 import httpCodes from '../constants/httpCodes';
 import invalidCodes from '../constants/invalidCodes';
+import prisma from '../database';
 
 export const createCompanyService = async (
     args: ICreateCompanyArgs,
 ): Promise<CustomResponse<ICompany>> => {
-    const { clientId, name, code } = args;
+    const { name, code, clientId } = args;
 
     try {
         const response = await prisma.company.create({
             data: {
-                clientId,
                 name,
                 code,
+                clientId,
             },
         });
 
@@ -31,14 +31,24 @@ export const createCompanyService = async (
     }
 };
 
-export const getCompaniesService = async (): Promise<
-    CustomResponse<ICompany[]>
-> => {
+export const updateCompanyService = async (
+    args: IUpdateCompanyArgs,
+): Promise<CustomResponse<ICompany>> => {
+    const { id, name, code, clientId } = args;
+
     try {
-        const response = await prisma.company.findMany();
-        return new CustomResponse(httpCodes.OK, response, undefined);
+        const response = await prisma.company.update({
+            where: { id },
+            data: {
+                name,
+                code,
+                clientId,
+            },
+        });
+
+        return new CustomResponse(httpCodes.OK, response, null);
     } catch (error) {
-        return handleError(error) as CustomResponse<ICompany[]>;
+        return handleError(error) as CustomResponse<ICompany>;
     }
 };
 
@@ -60,35 +70,24 @@ export const getCompanyByIdService = async (
 
         return new CustomResponse(httpCodes.OK, response, undefined);
     } catch (error) {
-        return handleError(error) as CustomResponse<ICompany>;
+        return handleError(error) as CustomResponse<any>;
     }
 };
 
-export const updateCompanyService = async (
-    id: number,
-    args: IUpdateCompanyArgs,
-): Promise<CustomResponse<ICompany | undefined>> => {
-    const { clientId, name, code } = args;
-
+export const getCompaniesService = async (): Promise<
+    CustomResponse<ICompany[]>
+> => {
     try {
-        const response = await prisma.company.update({
-            where: { id },
-            data: {
-                clientId,
-                name,
-                code,
-            },
-        });
-
+        const response = await prisma.company.findMany();
         return new CustomResponse(httpCodes.OK, response, undefined);
     } catch (error) {
-        return handleError(error) as CustomResponse<ICompany>;
+        return handleError(error) as CustomResponse<ICompany[]>;
     }
 };
 
 export const deleteCompanyService = async (
     id: number,
-): Promise<CustomResponse<ICompany | undefined>> => {
+): Promise<CustomResponse<ICompany>> => {
     try {
         const response = await prisma.company.delete({
             where: { id },

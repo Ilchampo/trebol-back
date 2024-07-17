@@ -1,20 +1,30 @@
-import { InvestorType } from '@prisma/client';
+import type { InvestorType } from '@prisma/client';
 
 export interface IInvestor {
-    id?: number;
+    id: number;
+    companyId: number;
+    sharePercentage: number;
     name: string;
-    type: InvestorType;
     code: string;
+    type: InvestorType;
+    parentInvestorId?: number | null;
 }
 
 export interface ICreateInvestorArgs {
+    companyId: number;
+    sharePercentage: number;
     name: string;
-    type: InvestorType;
     code: string;
+    type: InvestorType;
+    parentInvestorId?: number | null;
 }
 
 export interface IUpdateInvestorArgs {
+    id: number;
+    companyId?: number;
+    sharePercentage?: number;
     name?: string;
-    type?: InvestorType;
     code?: string;
+    type?: InvestorType;
+    parentInvestorId?: number | null;
 }
