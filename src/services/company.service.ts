@@ -85,6 +85,24 @@ export const getCompaniesService = async (): Promise<
     }
 };
 
+export const getCompaniesByClientId = async (
+    clientId: number,
+): Promise<CustomResponse<ICompany[]>> => {
+    try {
+        const response = await prisma.company.findMany({
+            where: {
+                clientId,
+            },
+            orderBy: {
+                name: 'asc',
+            },
+        });
+        return new CustomResponse(httpCodes.OK, response, undefined);
+    } catch (error) {
+        return handleError(error) as CustomResponse<ICompany[]>;
+    }
+};
+
 export const deleteCompanyService = async (
     id: number,
 ): Promise<CustomResponse<ICompany>> => {

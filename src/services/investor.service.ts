@@ -12,6 +12,7 @@ import CustomResponse from '../models/customResponse.model';
 import httpCodes from '../constants/httpCodes';
 import invalidCodes from '../constants/invalidCodes';
 import prisma from '../database';
+import { IFile } from '../interfaces/file.interface';
 
 export const createInvestorService = async (
     args: ICreateInvestorArgs,
@@ -158,9 +159,16 @@ export const saveCompanyInvestorsService = async (
     }
 };
 
+export interface ICompanyRealOwners {
+    name: string;
+    code: string;
+    percentage: number;
+    file: IFile;
+}
+
 export const getCompanyRealOwners = async (
     companyId: number,
-): Promise<CustomResponse<Record<string, number> | undefined>> => {
+): Promise<CustomResponse<ICompanyRealOwners[] | undefined>> => {
     try {
         const company = await prisma.company.findUnique({
             where: { id: companyId },
@@ -174,9 +182,16 @@ export const getCompanyRealOwners = async (
             );
         }
 
+        const client = await prisma.client.findUnique({
+            where: {
+                id: company.clientId,
+            },
+        });
+
         const companyInvestors = await prisma.investor.findMany({
             where: { companyId: company.id },
             orderBy: { id: 'asc' },
+            include: { files: true },
         });
 
         const investorGraph =
@@ -189,10 +204,25 @@ export const getCompanyRealOwners = async (
             rootInvestors,
         );
 
-        return new CustomResponse(httpCodes.OK, realOwners, undefined);
+        const result: ICompanyRealOwners[] = companyInvestors
+            .filter((investor) => realOwners.hasOwnProperty(investor.code))
+            .map((investor) => {
+                return {
+                    name: investor.name,
+                    code: investor.code,
+                    percentage: realOwners[investor.code],
+                    file: investor.files[0],
+                };
+            })
+            .filter(
+                (investor) =>
+                    investor.percentage >= (client?.minSearchPercentage ?? 0),
+            );
+
+        return new CustomResponse(httpCodes.OK, result, undefined);
     } catch (error) {
         return handleError(error) as CustomResponse<
-            Record<string, number> | undefined
+            ICompanyRealOwners[] | undefined
         >;
     }
 };

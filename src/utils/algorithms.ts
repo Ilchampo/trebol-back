@@ -35,10 +35,10 @@ export const calculateRealOwnersSharesAlgo = (
             (investor.sharePercentage * accumulatedShare) / 100;
 
         if (investor.type === 'person') {
-            if (!results[investor.name]) {
-                results[investor.name] = 0;
+            if (!results[investor.code]) {
+                results[investor.code] = 0;
             }
-            results[investor.name] += currentShare;
+            results[investor.code] += currentShare;
         } else {
             const subInvestors = adjacencyList[investor.id] ?? [];
             subInvestors.forEach((subInvestor) => {
