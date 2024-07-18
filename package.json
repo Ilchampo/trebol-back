@@ -4,8 +4,8 @@
     "description": "Web application made with Node to register companies and get their real owners",
     "main": "index.js",
     "scripts": {
-        "start": "node ./dist/index.js",
-        "build": "npx prisma generate && tsc",
+        "start": "ts-node src/index.ts",
+        "build": "npm run prisma && tsc",
         "lint": "eslint 'src/**/*.{ts,tsx}' --quiet",
         "format": "prettier --write 'src/**/*.{ts,tsx,json,md}'",
         "prisma": "npx prisma generate",
