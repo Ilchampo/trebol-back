@@ -15,10 +15,11 @@ export const transformToAdjacentGraphAlgo = (
             }
         }
 
-        if (!adjacencyList[investor.parentInvestorId ?? 0]) {
-            adjacencyList[investor.parentInvestorId ?? 0] = [];
+        const parentId = investor.parentInvestorId ?? 0;
+        if (!adjacencyList[parentId]) {
+            adjacencyList[parentId] = [];
         }
-        adjacencyList[investor.parentInvestorId ?? 0].push(investor);
+        adjacencyList[parentId].push(investor);
     });
 
     return adjacencyList;
@@ -39,12 +40,12 @@ export const calculateRealOwnersSharesAlgo = (
                 results[investor.code] = 0;
             }
             results[investor.code] += currentShare;
-        } else {
-            const subInvestors = adjacencyList[investor.id] ?? [];
-            subInvestors.forEach((subInvestor) => {
-                dfs(subInvestor, currentShare);
-            });
         }
+
+        const subInvestors = adjacencyList[investor.id] ?? [];
+        subInvestors.forEach((subInvestor) => {
+            dfs(subInvestor, currentShare);
+        });
     }
 
     rootInvestors.forEach((investor) => {

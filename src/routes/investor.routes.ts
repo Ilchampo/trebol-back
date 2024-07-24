@@ -40,7 +40,7 @@ router.delete('/:id', deleteInvestorController);
 // @route   POST /investors/company/:companyId
 // @desc    Save investors for a company
 // @access  Public
-router.post('/company/:companyId', saveCompanyInvestorsController);
+router.post('/company/:clientId', saveCompanyInvestorsController);
 
 // @route   GET /investors/company/:companyId/real-owners
 // @desc    Get real owners of a company

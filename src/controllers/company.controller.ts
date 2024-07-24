@@ -5,6 +5,7 @@ import {
     updateCompanyService,
     getCompanyByIdService,
     getCompaniesService,
+    getCompaniesByClientIdService,
     deleteCompanyService,
 } from '../services/company.service';
 
@@ -86,6 +87,23 @@ export const getCompaniesController = async (
     res: Response,
 ): Promise<Response> => {
     const response = await getCompaniesService();
+
+    return res
+        .status(response.getCode())
+        .send(response.getData() ?? response.getError());
+};
+
+export const getCompaniesByClientIdController = async (
+    req: Request,
+    res: Response,
+): Promise<Response> => {
+    const { id } = req.params;
+
+    if (!numValidators.isPositiveInteger(Number(id))) {
+        return res.status(httpCodes.BAD_REQUEST).send(invalidCodes.INVALID_ID);
+    }
+
+    const response = await getCompaniesByClientIdService(Number(id));
 
     return res
         .status(response.getCode())

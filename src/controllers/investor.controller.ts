@@ -123,15 +123,16 @@ export const saveCompanyInvestorsController = async (
     req: Request,
     res: Response,
 ): Promise<Response> => {
-    const { companyId } = req.params;
-    const investors = req.body.investors;
+    const { clientId } = req.params;
+    const { company, investors } = req.body;
 
-    if (!numValidators.isPositiveInteger(Number(companyId))) {
+    if (!numValidators.isPositiveInteger(Number(clientId))) {
         return res.status(httpCodes.BAD_REQUEST).send(invalidCodes.INVALID_ID);
     }
 
     const response = await saveCompanyInvestorsService(
-        Number(companyId),
+        Number(clientId),
+        company,
         investors,
     );
 

@@ -85,7 +85,7 @@ export const getCompaniesService = async (): Promise<
     }
 };
 
-export const getCompaniesByClientId = async (
+export const getCompaniesByClientIdService = async (
     clientId: number,
 ): Promise<CustomResponse<ICompany[]>> => {
     try {

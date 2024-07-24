@@ -13,6 +13,7 @@ import httpCodes from '../constants/httpCodes';
 import invalidCodes from '../constants/invalidCodes';
 import prisma from '../database';
 import { IFile } from '../interfaces/file.interface';
+import { createCompanyService } from './company.service';
 
 export const createInvestorService = async (
     args: ICreateInvestorArgs,
@@ -103,6 +104,21 @@ export const getInvestorsService = async (): Promise<
     }
 };
 
+export const getInvestorsByCompanyIdService = async (
+    id: number,
+): Promise<CustomResponse<IInvestor[]>> => {
+    try {
+        const response = await prisma.investor.findMany({
+            where: {
+                companyId: id,
+            },
+        });
+        return new CustomResponse(httpCodes.OK, response, undefined);
+    } catch (error) {
+        return handleError(error) as CustomResponse<IInvestor[]>;
+    }
+};
+
 export const deleteInvestorService = async (
     id: number,
 ): Promise<CustomResponse<IInvestor>> => {
@@ -118,42 +134,65 @@ export const deleteInvestorService = async (
 };
 
 export const saveCompanyInvestorsService = async (
-    companyId: number,
-    investors: ICreateInvestorArgs[],
+    clientId: number,
+    company: Record<string, string>,
+    investors: IInvestor[],
 ): Promise<CustomResponse<IInvestor[] | undefined>> => {
     try {
-        const company = await prisma.company.findUnique({
-            where: { id: companyId },
+        const registeredCompany = await createCompanyService({
+            clientId,
+            name: company.name,
+            code: company.code,
         });
 
-        if (!company) {
+        const companyId = registeredCompany.getData()?.id;
+
+        if (!companyId) {
             return new CustomResponse(
-                httpCodes.NOT_FOUND,
+                httpCodes.BAD_REQUEST,
                 undefined,
-                invalidCodes.INVALID_NOT_FOUND,
+                invalidCodes.SOMETHING_BROKEN,
             );
         }
 
-        await prisma.investor.deleteMany({
-            where: { companyId },
-        });
+        const mappedParentsId = new Map<number, number>();
 
-        const createdInvestors = await prisma.$transaction(
-            investors.map((investor) =>
-                prisma.investor.create({
-                    data: {
+        const processInvestors = async (
+            investors: IInvestor[],
+            parentId: number | null = null,
+        ) => {
+            for (const investor of investors) {
+                if (investor.parentInvestorId === parentId) {
+                    const saveInvestors = await createInvestorService({
                         companyId,
                         sharePercentage: investor.sharePercentage,
                         name: investor.name,
                         code: investor.code,
                         type: investor.type,
-                        parentInvestorId: investor.parentInvestorId,
-                    },
-                }),
-            ),
-        );
+                        parentInvestorId: parentId
+                            ? mappedParentsId.get(parentId)
+                            : null,
+                    });
 
-        return new CustomResponse(httpCodes.OK, createdInvestors, undefined);
+                    const newInvestorId = saveInvestors.getData()?.id;
+                    if (newInvestorId) {
+                        mappedParentsId.set(investor.id, newInvestorId);
+                        await processInvestors(investors, investor.id);
+                    }
+                }
+            }
+        };
+
+        await processInvestors(investors);
+
+        const companyInvestors =
+            await getInvestorsByCompanyIdService(companyId);
+
+        return new CustomResponse(
+            companyInvestors.getCode(),
+            companyInvestors.getData(),
+            companyInvestors.getError(),
+        );
     } catch (error) {
         return handleError(error) as CustomResponse<IInvestor[]>;
     }
@@ -183,9 +222,7 @@ export const getCompanyRealOwners = async (
         }
 
         const client = await prisma.client.findUnique({
-            where: {
-                id: company.clientId,
-            },
+            where: { id: company.clientId },
         });
 
         const companyInvestors = await prisma.investor.findMany({
@@ -196,16 +233,22 @@ export const getCompanyRealOwners = async (
 
         const investorGraph =
             algo.transformToAdjacentGraphAlgo(companyInvestors);
+
         const rootInvestors = companyInvestors.filter(
             (investor) => investor.parentInvestorId === null,
         );
+
         const realOwners = algo.calculateRealOwnersSharesAlgo(
             investorGraph,
             rootInvestors,
         );
 
         const result: ICompanyRealOwners[] = companyInvestors
-            .filter((investor) => realOwners.hasOwnProperty(investor.code))
+            .filter(
+                (investor) =>
+                    realOwners.hasOwnProperty(investor.code) &&
+                    investor.type === 'person',
+            )
             .map((investor) => {
                 return {
                     name: investor.name,

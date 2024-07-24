@@ -5,6 +5,7 @@ import {
     updateCompanyController,
     getCompanyByIdController,
     getCompaniesController,
+    getCompaniesByClientIdController,
     deleteCompanyController,
 } from '../controllers/company.controller';
 
@@ -29,6 +30,11 @@ router.get('/:id', getCompanyByIdController);
 // @desc    Get all companies
 // @access  Public
 router.get('/', getCompaniesController);
+
+// @route   GET /companies/client
+// @desc    Get all companies by client id
+// @access  Public
+router.get('/client/:id', getCompaniesByClientIdController);
 
 // @route   DELETE /companies/:id
 // @desc    Delete a company
